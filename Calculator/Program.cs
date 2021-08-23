@@ -6,7 +6,8 @@ namespace Calculator
 	{
 		static void Main(string[] args)
 		{
-			Console.WriteLine(StringCalculator.Add("1\n2,3"));
+			Console.WriteLine(StringCalculator.Delimeter("//;1;2;3"));
+			Console.WriteLine(StringCalculator.Add("//;\n1;2"));
 		}
 	}
 }

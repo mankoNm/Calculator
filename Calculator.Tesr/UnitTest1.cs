@@ -63,5 +63,17 @@ namespace Calculator.Tesr
 
 			Assert.AreEqual(expected, actual);
 		}
+
+
+		[Test]
+		public void Add_delimeter_1_delimeter_2String_3Expected()
+		{
+			string parameters = "//;\n1;2";
+			int expected = 3;
+
+			int actual = StringCalculator.Add(parameters);
+
+			Assert.AreEqual(expected, actual);
+		}
 	}
 }
