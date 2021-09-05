@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 
 namespace Calculator
 {
@@ -11,24 +12,84 @@ namespace Calculator
 				return 0;
 			}
 
-			return SumNumbers(parameters);
-			
+			int[] numbers = GetNumbersList(parameters);
+			string messageNegativesAllowed = NegativesAllowed(numbers);
+
+			if (messageNegativesAllowed.Length > 0)
+			{
+				Console.WriteLine(messageNegativesAllowed);
+				return -1;
+			}
+
+			return SumNumbers(numbers);
+
+		}
+		public static int[] GetNumbersList(string param)
+		{
+			string substr = param;
+			int number, countNumbers = 1;
+			string[] delimeter = Delimeter(param);
+			while (Index(substr, delimeter) < substr.Length)
+			{
+				number = GetNumber(substr, delimeter, out substr);
+				countNumbers++;
+			}
+
+			int[] numbers = new int[countNumbers];
+			substr = param;
+			for (int i = 0; i < countNumbers; i++)
+			{
+				number = GetNumber(substr, delimeter, out substr);
+				numbers[i] = number;
+			}
+			return numbers;
 		}
 
-		public static int SumNumbers(string param)
-				{
-					string substr = param;
-					int summ = 0;
-					char[] delimeter = Delimeter(param);
-					while (Index(substr, delimeter) < substr.Length)
-					{
-						summ = summ + GetNumber(substr, delimeter, out substr);
-					}
-					summ = summ + GetNumber(substr, delimeter, out substr);
-					return summ;
-				}
+		public static int SumNumbers(int[] numbers)
+		{			
+			int summ = 0;
+			foreach (int number in numbers)
+			{
+				if (number > 1000)
+					continue;
 
-		public static int GetNumber(string str, char[] delimeter, out string substr)
+				summ += number;
+			}
+			return summ;
+		}
+
+
+
+		public static string NegativesAllowed(int[] numbers)
+		{
+			string message = "";
+
+			foreach (int number in numbers)
+			{
+				try
+				{
+					if (number < 0)
+					{
+						throw new NegativesNotAllowedException(number.ToString());
+					}
+				}
+				catch (Exception ex)
+				{
+					message = $"{message}, {ex.Message}";
+				}
+			}
+
+			if (message.Length > 0)
+			{
+				return $"Negatives allowed ({message})";
+			}
+			else
+			{
+				return "";
+			}			
+		}
+
+		public static int GetNumber(string str, string[] delimeter, out string substr)
 		{
 			substr = null;			
 			if (Index(str, delimeter) < str.Length)
@@ -47,10 +108,10 @@ namespace Calculator
 			return int.Parse(str);
 		}
 	
-		public static int Index(string param, char[] delimeter)
+		public static int Index(string param, string[] delimeter)
 		{			
 			int index = param.Length;
-			foreach(char delim in delimeter){
+			foreach(string delim in delimeter){
 				if ((param.IndexOf(delim) != -1) && param.IndexOf(delim) < index)
 				{
 					index = param.IndexOf(delim);
@@ -59,14 +120,14 @@ namespace Calculator
 			return index;
 		}
 
-		public static char[] Delimeter(string param)
+		public static string[] Delimeter(string param)
 		{
 			if (param.StartsWith("//"))
 			{
-				char[] delim = {param.Substring(2, 1).ToCharArray()[0], ',', '\n'};
+				string[] delim = {param.Substring(2, 1).ToCharArray()[0].ToString(), ",", "\n"};
 				return  delim;
 			}
-			char[] withoutDelim = {',', '\n' };
+			string[] withoutDelim = {",", "\n" };
 			return withoutDelim;
 		}
 	}

@@ -75,5 +75,38 @@ namespace Calculator.Tesr
 
 			Assert.AreEqual(expected, actual);
 		}
+
+		[Test]
+		public void Add_1_negative1_minus1Expected()
+		{
+			string parameters = "//;\n-1;1";
+			int expected = -1;
+
+			int actual = StringCalculator.Add(parameters);
+
+			Assert.AreEqual(expected, actual);
+		}
+
+		[Test]
+		public void Add_1001_2_2Expected()
+		{
+			string parameters = "//;\n1001;2";
+			int expected = 2;
+
+			int actual = StringCalculator.Add(parameters);
+
+			Assert.AreEqual(expected, actual);
+		}
+
+		[Test]
+		public void Add_1_2_3_6Expected()
+		{
+			string parameters = "//[***]\n1***2***3";
+			int expected = 6;
+
+			int actual = StringCalculator.Add(parameters);
+
+			Assert.AreEqual(expected, actual);
+		}
 	}
 }
