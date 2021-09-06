@@ -119,5 +119,16 @@ namespace Calculator.Tesr
 
 			Assert.AreEqual(expected, actual);
 		}
+
+		[Test]
+		public void Add_1_oneLongDelim2otherLongDelim3_6Expected()
+		{
+			string parameters = "//[***][%%]\n1***2%%3";
+			int expected = 6;
+
+			int actual = StringCalculator.Add(parameters);
+
+			Assert.AreEqual(expected, actual);
+		}
 	}
 }
