@@ -26,10 +26,10 @@ namespace Calculator
 		}
 		public static int[] GetNumbersList(string param)
 		{
-			string substr = param;
+			string substr = param, delimCurrent;
 			int number, countNumbers = 1;
 			string[] delimeter = Delimeter(param);
-			while (Index(substr, delimeter) < substr.Length)
+			while (Index(substr, delimeter, out delimCurrent) < substr.Length)
 			{
 				number = GetNumber(substr, delimeter, out substr);
 				countNumbers++;
@@ -57,8 +57,6 @@ namespace Calculator
 			}
 			return summ;
 		}
-
-
 
 		public static string NegativesAllowed(int[] numbers)
 		{
@@ -91,13 +89,15 @@ namespace Calculator
 
 		public static int GetNumber(string str, string[] delimeter, out string substr)
 		{
-			substr = null;			
-			if (Index(str, delimeter) < str.Length)
+			substr = null;
+			string delimCurrent;
+			int index = Index(str, delimeter, out delimCurrent);
+			if (index < str.Length)
 				{
-					substr = str.Substring(Index(str, delimeter) + 1);
-					string number = str.Substring(0, Index(str, delimeter));
-					if (!number.Contains('/') && number.Length > 0)
-				    {
+					substr = str.Substring(index + delimCurrent.Length);
+					string number = str.Substring(0, index);
+					if (!number.Contains('/') && number.Length > 0 && !number.Contains(']'))
+					{
 						return int.Parse(number);
 					}
 					else
@@ -108,13 +108,17 @@ namespace Calculator
 			return int.Parse(str);
 		}
 	
-		public static int Index(string param, string[] delimeter)
-		{			
+		public static int Index(string param, string[] delimeter, out string delimCurrent)
+		{
+			delimCurrent = null;
 			int index = param.Length;
+			int delimIndex;
 			foreach(string delim in delimeter){
-				if ((param.IndexOf(delim) != -1) && param.IndexOf(delim) < index)
+				delimIndex = param.IndexOf(delim);
+				if (delimIndex != -1 && delimIndex < index)
 				{
-					index = param.IndexOf(delim);
+					index = delimIndex;
+					delimCurrent = delim;
 				} 
 			}			
 			return index;
@@ -122,9 +126,14 @@ namespace Calculator
 
 		public static string[] Delimeter(string param)
 		{
-			if (param.StartsWith("//"))
+			if (param.StartsWith("//["))
 			{
-				string[] delim = {param.Substring(2, 1).ToCharArray()[0].ToString(), ",", "\n"};
+				string[] delim = {param.Substring(param.IndexOf('[') + 1, (param.IndexOf(']') - param.IndexOf('[') - 1)), ",", "\n" };
+				return delim;
+			}
+			else if (param.StartsWith("//"))
+			{
+				string[] delim = {param.Substring(2, 1), ",", "\n"};
 				return  delim;
 			}
 			string[] withoutDelim = {",", "\n" };
