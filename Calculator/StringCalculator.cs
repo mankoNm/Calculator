@@ -28,7 +28,7 @@ namespace Calculator
 		{
 			string substr = param, delimCurrent;
 			int number, countNumbers = 1;
-			string[] delimeter = Delimeter(param);
+			ArrayList delimeter = Delimeter(param);
 			while (Index(substr, delimeter, out delimCurrent) < substr.Length)
 			{
 				number = GetNumber(substr, delimeter, out substr);
@@ -87,7 +87,7 @@ namespace Calculator
 			}			
 		}
 
-		public static int GetNumber(string str, string[] delimeter, out string substr)
+		public static int GetNumber(string str, ArrayList delimeter, out string substr)
 		{
 			substr = null;
 			string delimCurrent;
@@ -108,7 +108,7 @@ namespace Calculator
 			return int.Parse(str);
 		}
 	
-		public static int Index(string param, string[] delimeter, out string delimCurrent)
+		public static int Index(string param, ArrayList delimeter, out string delimCurrent)
 		{
 			delimCurrent = null;
 			int index = param.Length;
@@ -124,20 +124,30 @@ namespace Calculator
 			return index;
 		}
 
-		public static string[] Delimeter(string param)
+		public static ArrayList Delimeter(string param)
 		{
+			ArrayList delimList = new ArrayList();
+			delimList.Add(",");
+			delimList.Add("\n");
 			if (param.StartsWith("//["))
 			{
-				string[] delim = {param.Substring(param.IndexOf('[') + 1, (param.IndexOf(']') - param.IndexOf('[') - 1)), ",", "\n" };
-				return delim;
+				string delimCurrent;				
+				while (param.Contains("["))
+				{
+					delimCurrent = param.Substring(param.IndexOf('[') + 1, (param.IndexOf(']') - param.IndexOf('[') - 1));
+					delimList.Add(delimCurrent);
+					param = param.Substring(param.IndexOf(']') + 1);
+				}
+				
+				return delimList;
 			}
 			else if (param.StartsWith("//"))
 			{
-				string[] delim = {param.Substring(2, 1), ",", "\n"};
-				return  delim;
+				delimList.Add(param.Substring(2, 1));
+				return delimList;
 			}
-			string[] withoutDelim = {",", "\n" };
-			return withoutDelim;
+			
+			return delimList;
 		}
 	}
 } 
